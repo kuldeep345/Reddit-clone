@@ -23,7 +23,14 @@ const Login: React.FC<LoginProps> = () => {
     // firebase logic
     const onSubmit = async(e:React.FormEvent<HTMLFormElement>) => { 
         e.preventDefault()
-      await signInWithEmailAndPassword(LoginForm.email , LoginForm.password)
+      await signInWithEmailAndPassword(LoginForm.email , LoginForm.password).then((user)=>{
+        if(user !== undefined){
+            setAuthModaState(prev =>({
+                ...prev,
+                open:false
+               }))
+        }
+      })
     }
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,12 +71,21 @@ const Login: React.FC<LoginProps> = () => {
                 >
             </div> : 'Login'}
             </button>
+            <div className='flex justify-between items-center mt-2'>           
+            <div>
+                <h2 onClick={()=>setAuthModaState((prev)=>({
+                ...prev,
+                view:"resetPassword"
+            }))} className='text-xs font-semibold cursor-pointer'>Reset password</h2>
+            </div>
+
         <div className='flex justify-center text-xs font-semibold gap-1 mt-1'>
             <span>New here?</span>
             <span onClick={()=>setAuthModaState((prev)=>({
                 ...prev,
                 view:"signup"
             }))} className='text-blue-500 font-bold cursor-pointer hover:underline'>SIGN UP</span>
+        </div>
         </div>
     </form>
 }

@@ -6,6 +6,7 @@ import { authModalState } from '@/atoms/authModalAtom';
 import { AiOutlineClose } from 'react-icons/ai'
 import AuthInputs from './AuthInputs';
 import OAuthButton from './OAuthButton';
+import ResetPasword from './ResetPasword';
 
 type indexProps = {
   
@@ -65,9 +66,15 @@ const index:React.FC<indexProps> = ({}) => {
                   </Dialog.Title>
                   <div className="mt-8 flex flex-col items-center justify-center">
                     <div className='flex flex-col items-center justify-center w-[70%] '>
-                    <OAuthButton/>
+                    {modalState.view ==='login' || modalState.view === 'signup' ?
+                      (<>
+                      <OAuthButton/>
                      <span className='text-xl text-gray-500 font-semibold tracking-tighter my-3'>OR</span>
                     <AuthInputs/>
+                    </>) :(
+                      <ResetPasword/>
+                    )
+                    }
                    
                     </div>
                   </div>
