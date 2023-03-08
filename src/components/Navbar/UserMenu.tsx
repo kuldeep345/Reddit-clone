@@ -7,9 +7,10 @@ import { FaRedditSquare } from 'react-icons/fa';
 import { VscAccount } from 'react-icons/vsc'
 import { BiUserCircle, BiLogOut } from 'react-icons/bi';
 import { auth } from '@/firebase/clientApp';
-import { useSetRecoilState } from 'recoil';
+import { useResetRecoilState, useSetRecoilState } from 'recoil';
 import { authModalState } from '@/atoms/authModalAtom';
 import { IoSparkles } from 'react-icons/io5';
+import { CommunityState } from '@/atoms/communitiesAtom';
 
 
 type UserMenuProps = {
@@ -17,8 +18,13 @@ type UserMenuProps = {
 };
 
 const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
-
+  const resetCommunityState = useResetRecoilState(CommunityState)
   const setAuthModalState = useSetRecoilState(authModalState)
+
+  const logout = async ()=>{
+    await signOut(auth)
+    resetCommunityState();
+  }
 
   return (
     <div>
@@ -76,7 +82,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    onClick={() => signOut(auth)}
+                    onClick={logout}
                     className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'
                       } group inline-flex w-full items-center font-semibold rounded-sm px-4 py-2 text-sm`}
                   >

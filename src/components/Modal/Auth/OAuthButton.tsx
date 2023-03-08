@@ -1,7 +1,9 @@
-import React from 'react';
+import React , { useEffect } from 'react';
 import { FcGoogle } from 'react-icons/fc'
 import { useSignInWithGoogle } from 'react-firebase-hooks/auth';
-import { auth } from '@/firebase/clientApp';
+import { auth, firestore } from '@/firebase/clientApp';
+import { doc, setDoc } from 'firebase/firestore';
+import { User } from 'firebase/auth';
 
 type OAuthButtonProps = {
     
@@ -9,7 +11,17 @@ type OAuthButtonProps = {
 
 const OAuthButton:React.FC<OAuthButtonProps> = () => {
 
-    const [signInWithGoogle , user , loading , error] = useSignInWithGoogle(auth)
+    const [signInWithGoogle , userCred , loading , error] = useSignInWithGoogle(auth)
+
+    const createUserDocument = async (user:User) => {
+       const userDocRef = doc(firestore , "users" , user.uid);
+       await setDoc(userDocRef , JSON.parse(JSON.stringify(user)))
+    }
+        useEffect(() => {
+            if(userCred){
+                createUserDocument(userCred.user)
+            }
+        }, [userCred])
     
     return <div className='flex flex-col w-full'>
         <button className="googlebtn" onClick={()=>signInWithGoogle()}>
