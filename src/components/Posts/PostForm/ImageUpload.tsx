@@ -12,10 +12,12 @@ const ImageUpload:React.FC<ImageUploadProps> = ({onSelectedImage , setSelectedFi
 
     const selectedFileRef = useRef<HTMLInputElement>(null)
     
-    return <div className='flex items-center justify-center w-full h-72 p-4'>
+    return <div className='flex items-center justify-center w-full min-h-96 p-4'>
         {selectedFile ? ( 
-            <div className='flex flex-col gap-4 justify-center items-center'>
-            <Image src={selectedFile} width="250" height="250" alt=''/>
+            <div className='flex flex-col justify-center gap-3 items-center w-full'>
+                <div className='relative w-full h-full min-h-[360px]'>
+            <Image src={selectedFile} fill style={{objectFit:'contain'}} alt=''/>
+                </div>
             <div className='flex gap-3 text-sm'>
                 <button onClick={()=>setSelectedTab("Post")} className='bg-blue-500 font-semibold py-1 px-4 rounded-full text-white'>Back to Post</button>
                 <button onClick={()=>setSelectedFile("")} className='border border-blue-500 text-blue-500 font-semibold py-1 px-4 rounded-full'>Remove</button>
