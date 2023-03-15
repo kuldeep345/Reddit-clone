@@ -7,7 +7,7 @@ type ImageLoaderProps = {
 const ImageLoader:React.FC<ImageLoaderProps> = () => {
     
     return (
-        <div role="status" className="flex w-full items-center justify-center h-[460px] bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700">
+        <div role="status" className="absolute top-0 flex w-full items-center justify-center h-full bg-gray-300 rounded-lg animate-pulse z-50 min-h-[200px]">
         </div>
     )
 }

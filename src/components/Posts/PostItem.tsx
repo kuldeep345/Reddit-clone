@@ -6,6 +6,7 @@ import moment from 'moment';
 import Image from 'next/image';
 import { AiOutlineDelete } from 'react-icons/ai';
 import ImageLoader from './ImageLoader';
+import { MdOutlineError } from 'react-icons/md';
 
 type PostItemProps = {
     post: Post;
@@ -37,7 +38,7 @@ const PostItem: React.FC<PostItemProps> = ({
             if (!success) {
                 throw new Error("Failed to delete post")
             }
-            console.log("post was successfully deleted")
+            
         } catch (error: any) {
             setError(error.message)
         }
@@ -54,6 +55,12 @@ const PostItem: React.FC<PostItemProps> = ({
                     : <BsArrowDownCircle className={`${userVoteValue === 1 ? 'text-[#4379ff]' : 'text-gray-400'} cursor-pointer`} fontSize={22} onClick={onVote} />}
             </div>
             <div className='w-full'>
+            {error && (
+            <div className="bg-red-200 flex gap-1.5 items-center text-red-700 px-4 py-2 rounded relative text-sm" role="alert">
+                <MdOutlineError className='text-base'/>
+            <span className="font-semibold text-gray-600">{error}</span>
+          </div>
+        )}
                 <div className='p-[10px] flex flex-col gap-2'>
                     <div className='flex gap-0.5 text-xs'>
                         <span className='text-gray-400'>
@@ -63,10 +70,10 @@ const PostItem: React.FC<PostItemProps> = ({
                     <h1 className='text-lg font-bold'>{post.title}</h1>
                     <p className='text-[13px] text-gray-800'>{post.body}</p>
                     {post.imageURL && (
-                        <div className='flex p-2 w-full max-h-[460px]'>
-                            {imageLoader && (<ImageLoader />)}
-                            <div className='relative w-full h-[260px] md:h-[460px]'>
-                                <Image src={post.imageURL} fill alt='' style={{ objectFit: 'contain' }} onLoad={() => setImageLoader(false)} />
+                        <div className='relative flex p-2 w-full h-full'>
+                            {imageLoader && <ImageLoader />} 
+                            <div className={`w-full`}>
+                                <Image src={post.imageURL} fill alt='' className='object-contain !w-full !relative !h-[unset]' onLoad={() => setImageLoader(false)} />
                             </div>
                         </div>
                     )}
