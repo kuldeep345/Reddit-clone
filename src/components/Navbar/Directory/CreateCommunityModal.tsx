@@ -7,22 +7,21 @@ import { HiLockClosed } from 'react-icons/hi'
 import { doc, getDoc, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore';
 import { firestore, auth } from '@/firebase/clientApp';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import useDirectory from './useDirectory';
 
 
 type CreateCommunityModalProps = {
-    open: boolean,
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>
+ 
 };
 
-const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({ open, setOpen }) => {
+const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({ }) => {
+    const { directoryState , toggleMenuOpen } = useDirectory()
     const [user] = useAuthState(auth)
     const [communityName, setCommunityName] = useState("");
     const [charsRemaining, setcharsRemaining] = useState(21);
     const [communityType, setCommunityType] = useState("public")
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
-
-    console.log(user)
 
     const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.value.length > 21) return
@@ -78,8 +77,8 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({ open, setOp
     }
 
     return (
-        <Transition appear show={open} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={() => { setOpen(false); setCommunityName(""); setError('') }}>
+        <Transition appear show={directoryState.isOpen} as={Fragment}>
+            <Dialog as="div" className="relative z-10" onClose={() => { toggleMenuOpen(); setCommunityName(""); setError('') }}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"
@@ -106,7 +105,7 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({ open, setOp
                             <Dialog.Panel className="w-full max-w-[32rem] transform overflow-hidden rounded-md bg-white text-left align-middle shadow-xl transition-all">
                                 <div className='h-10 flex items-center justify-between py-6 px-4 border-b border-gray-200'>
                                     <h2 className='font-semibold'>Create a community</h2>
-                                    <AiOutlineClose className='text-xl cursor-pointer' onClick={() => { setOpen(false); setCommunityName(""); setError('') }} />
+                                    <AiOutlineClose className='text-xl cursor-pointer' onClick={() => {toggleMenuOpen(); setCommunityName(""); setError('') }} />
                                 </div>
                                 <div className='flex flex-col gap-7 py-4 px-4'>
                                     <div>

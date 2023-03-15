@@ -54,8 +54,6 @@ const About: React.FC<AboutProps> = ({ communityData }) => {
         setUploadingImage(false)
     };
 
-    console.log(user?.uid , communityData.creatorId)
-
     return (
         <div className='sticky top-[14px] w-full'>
             <div className='flex justify-between bg-blue-500 text-white p-2 rounded-t'>

@@ -10,6 +10,8 @@ import { doc, getDoc } from 'firebase/firestore';
 import { Post } from '@/atoms/postsAtom';
 import About from '@/components/Community/About';
 import useCommunityData from '@/hooks/useCommunityData';
+import Comments from '@/components/Posts/Comments/Comments';
+import { User } from 'firebase/auth';
 
 interface IPostPageProps {
 }
@@ -53,6 +55,7 @@ const PostPage: React.FunctionComponent<IPostPageProps> = (props) => {
         }
         userIsCreator={user?.uid === postsStateValue.selectedPost?.creatorId}
         />}
+        <Comments user={user as User} selectedPost={postsStateValue.selectedPost} communityId={postsStateValue.selectedPost?.communityId as string}/>
      </>
      <>
          {communityStateValue.currentCommunity &&(

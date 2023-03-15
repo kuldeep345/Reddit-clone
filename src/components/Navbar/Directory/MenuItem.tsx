@@ -1,0 +1,38 @@
+import Image from 'next/image';
+import * as React from 'react';
+import { IconType } from 'react-icons/lib';
+import useDirectory from './useDirectory';
+
+
+interface IMenuItemProps {
+    displayText:string;
+    link:string;
+    icon:IconType;
+    imageUrl:string;
+}
+
+const MenuItem: React.FunctionComponent<IMenuItemProps> = ({
+        displayText,
+        link,
+        icon,
+        imageUrl
+}) => {
+    const { onSelectMenuItem } = useDirectory()
+    console.log(icon)
+  return (
+    <div className='w-[100%] text-sm hover:bg-gray-200 py-2 px-4' onClick={()=>onSelectMenuItem({displayText , link ,icon ,imageURL:imageUrl})}>
+        <div className='flex items-center'>
+            {imageUrl ? (
+                <Image src={imageUrl} fill alt='' className="!relative !h-8 !w-8 rounded-full mr-2"/>
+            ) : (
+                <>
+                {icon}
+                </>
+            )}
+            <p>{displayText}</p>
+        </div>
+    </div>
+  )
+};
+
+export default MenuItem;
