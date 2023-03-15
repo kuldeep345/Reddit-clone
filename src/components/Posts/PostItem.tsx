@@ -7,15 +7,15 @@ import Image from 'next/image';
 import { AiOutlineDelete } from 'react-icons/ai';
 import ImageLoader from './ImageLoader';
 import { MdOutlineError } from 'react-icons/md';
-import { useRecoilState } from 'recoil';
+import { Router, useRouter } from 'next/router';
 
 type PostItemProps = {
     post: Post;
     userIsCreator: boolean;
     userVoteValue?: number;
-    onVote: (post: Post, vote: number, communityId: string) => void;
+    onVote: ( event:React.MouseEvent<SVGElement, MouseEvent>, post: Post, vote: number, communityId: string) => void;
     onDeletePost: (post: Post) => Promise<boolean>;
-    onSelectPost: () => void;
+    onSelectPost?: (post:Post) => void;
 };
 
 const PostItem: React.FC<PostItemProps> = ({
@@ -30,8 +30,11 @@ const PostItem: React.FC<PostItemProps> = ({
     const [imageLoader, setImageLoader] = useState(true)
     const [error, setError] = useState('');
     const [loadingDelete, setLoadingDelete] = useState(false)
+    const singlePostPage = !onSelectPost
+    const router = useRouter()
 
-    const handleDelete = async () => {
+    const handleDelete = async (event:React.MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation()
         setLoadingDelete(true)
         try {
             const success = await onDeletePost(post)
@@ -39,7 +42,9 @@ const PostItem: React.FC<PostItemProps> = ({
             if (!success) {
                 throw new Error("Failed to delete post")
             }
-            
+            if(singlePostPage){
+                router.push(`/r/${post.communityId}`);
+            }
         } catch (error: any) {
             setError(error.message)
         }
@@ -47,13 +52,13 @@ const PostItem: React.FC<PostItemProps> = ({
     }
 
     return (
-        <div className='flex border border-gray-300 bg-white cursor-pointer' onClick={onSelectPost}>
-            <div className="flex flex-col items-center p-2 w-[40px] rounded bg-gray-100">
-                {userVoteValue! > 0 ? <BsFillArrowUpCircleFill className={`${userVoteValue! > 0 ? 'text-orange-500' : 'text-gray-400'}`} fontSize={22} onClick={()=>onVote(post , 1 , post.communityId)} />
-                    : <BsArrowUpCircle className={`${userVoteValue! > 1 ? 'text-gray-100' : 'text-gray-400'} cursor-pointer`} fontSize={22} onClick={()=>onVote(post, 1 , post.communityId)} />}
-                <span className='text-sm text-gray-400'>{post.voteStatus}</span>
-                {userVoteValue! < 1 ? <BsFillArrowDownCircleFill className={`${userVoteValue! <= 1  ? 'text-[#4379ff]' : 'text-gray-400'}`} fontSize={22} onClick={()=>onVote(post , -1 , post.communityId)} />
-                    : <BsArrowDownCircle className={`${userVoteValue! <= 1 ? 'text-gray-400' : 'text-gray-400'} cursor-pointer`} fontSize={22} onClick={()=>onVote(post, -1 , post.communityId)} />}
+        <div className={`flex border bg-white  ${singlePostPage ? 'rounded border-none cursor-default' : 'border-gray-300 cursor-pointer'} overflow-hidden`} onClick={()=> onSelectPost && onSelectPost(post)}>
+            <div className={`flex flex-col gap-1 items-center p-2 w-[50px] ${singlePostPage ? 'bg-none' : 'bg-gray-100 rounded'}`}>
+                {userVoteValue! > 0 ? <BsFillArrowUpCircleFill className={`${userVoteValue! > 0 ? 'text-orange-500' : 'text-gray-400'}`} fontSize={22} onClick={(event)=>onVote(event, post , 1 , post.communityId)} />
+                    : <BsArrowUpCircle className={`${userVoteValue! > 1 ? 'text-gray-100' : 'text-gray-400'} cursor-pointer`} fontSize={22} onClick={(event)=>onVote(event, post, 1 , post.communityId)} />}
+                <span className='text-xs text-gray-400'>{post.voteStatus}</span>
+                {userVoteValue! < 1 ? <BsFillArrowDownCircleFill className={`${userVoteValue! <= 1  ? 'text-[#4379ff]' : 'text-gray-400'}`} fontSize={22} onClick={(event)=>onVote(event, post , -1 , post.communityId)} />
+                    : <BsArrowDownCircle className={`${userVoteValue! <= 1 ? 'text-gray-400' : 'text-gray-400'} cursor-pointer`} fontSize={22} onClick={(event)=>onVote(event, post, -1 , post.communityId)} />}
             </div>
             <div className='w-full'>
             {error && (
@@ -74,7 +79,7 @@ const PostItem: React.FC<PostItemProps> = ({
                         <div className='relative flex p-2 w-full h-full'>
                             {imageLoader && <ImageLoader />} 
                             <div className={`w-full`}>
-                                <Image src={post.imageURL} fill alt='' className='object-contain !w-full !relative !h-[unset]' onLoad={() => setImageLoader(false)} />
+                                <Image src={post.imageURL} fill alt='' className='object-contain !w-full !relative !max-h-[500px]' onLoad={() => setImageLoader(false)} />
                             </div>
                         </div>
                     )}
