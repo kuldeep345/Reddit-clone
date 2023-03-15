@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Post } from '@/atoms/postsAtom';
+import { Post, postState } from '@/atoms/postsAtom';
 import { BsArrowUpCircle, BsArrowDownCircle, BsFillArrowDownCircleFill, BsFillArrowUpCircleFill, BsChat, BsBookmark } from 'react-icons/bs'
 import { IoArrowRedoOutline } from 'react-icons/io5'
 import moment from 'moment';
@@ -7,12 +7,13 @@ import Image from 'next/image';
 import { AiOutlineDelete } from 'react-icons/ai';
 import ImageLoader from './ImageLoader';
 import { MdOutlineError } from 'react-icons/md';
+import { useRecoilState } from 'recoil';
 
 type PostItemProps = {
     post: Post;
     userIsCreator: boolean;
     userVoteValue?: number;
-    onVote: () => {};
+    onVote: (post: Post, vote: number, communityId: string) => void;
     onDeletePost: (post: Post) => Promise<boolean>;
     onSelectPost: () => void;
 };
@@ -48,11 +49,11 @@ const PostItem: React.FC<PostItemProps> = ({
     return (
         <div className='flex border border-gray-300 bg-white cursor-pointer' onClick={onSelectPost}>
             <div className="flex flex-col items-center p-2 w-[40px] rounded bg-gray-100">
-                {userVoteValue === 1 ? <BsFillArrowUpCircleFill className={`${userVoteValue === 1 ? 'text-gray-100' : 'text-gray-400'}`} fontSize={22} onClick={onVote} />
-                    : <BsArrowUpCircle className={`${userVoteValue === 1 ? 'text-gray-100' : 'text-gray-400'} cursor-pointer`} fontSize={22} onClick={onVote} />}
+                {userVoteValue! > 0 ? <BsFillArrowUpCircleFill className={`${userVoteValue! > 0 ? 'text-orange-500' : 'text-gray-400'}`} fontSize={22} onClick={()=>onVote(post , 1 , post.communityId)} />
+                    : <BsArrowUpCircle className={`${userVoteValue! > 1 ? 'text-gray-100' : 'text-gray-400'} cursor-pointer`} fontSize={22} onClick={()=>onVote(post, 1 , post.communityId)} />}
                 <span className='text-sm text-gray-400'>{post.voteStatus}</span>
-                {userVoteValue === -1 ? <BsFillArrowDownCircleFill className={`${userVoteValue === -1 ? 'text-gray-100' : 'text-gray-400'}`} fontSize={22} onClick={onVote} />
-                    : <BsArrowDownCircle className={`${userVoteValue === 1 ? 'text-[#4379ff]' : 'text-gray-400'} cursor-pointer`} fontSize={22} onClick={onVote} />}
+                {userVoteValue! < 1 ? <BsFillArrowDownCircleFill className={`${userVoteValue! <= 1  ? 'text-[#4379ff]' : 'text-gray-400'}`} fontSize={22} onClick={()=>onVote(post , -1 , post.communityId)} />
+                    : <BsArrowDownCircle className={`${userVoteValue! <= 1 ? 'text-gray-400' : 'text-gray-400'} cursor-pointer`} fontSize={22} onClick={()=>onVote(post, -1 , post.communityId)} />}
             </div>
             <div className='w-full'>
             {error && (
