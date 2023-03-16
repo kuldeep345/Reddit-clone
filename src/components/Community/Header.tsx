@@ -12,8 +12,6 @@ const Header: React.FC<HeaderProps> = ({ communityData }) => {
     const { communityStateValue , onJoinOrLeaveCommunity , loading } = useCommunityData();
     const isJoined = !!communityStateValue.mySnippets.find(item=>item.communityId === communityData.id);
 
-    console.log(communityStateValue.currentCommunity)
-
     return (
         <div className='flex flex-col w-[100%] h-[146px]'>
             <div className='w-full h-1/2 bg-blue-500' />

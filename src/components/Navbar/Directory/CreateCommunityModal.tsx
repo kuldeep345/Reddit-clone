@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { AiOutlineClose, AiFillEye } from 'react-icons/ai'
@@ -11,11 +11,12 @@ import useDirectory from './useDirectory';
 
 
 type CreateCommunityModalProps = {
- 
+ open:boolean;
+ setOpen:Dispatch<SetStateAction<boolean>>
 };
 
-const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({ }) => {
-    const { directoryState , toggleMenuOpen } = useDirectory()
+const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({ open , setOpen }) => {
+   
     const [user] = useAuthState(auth)
     const [communityName, setCommunityName] = useState("");
     const [charsRemaining, setcharsRemaining] = useState(21);
@@ -77,8 +78,8 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({ }) => {
     }
 
     return (
-        <Transition appear show={directoryState.isOpen} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={() => { toggleMenuOpen(); setCommunityName(""); setError('') }}>
+        <Transition appear show={open} as={Fragment}>
+            <Dialog as="div" className="relative z-10" onClose={() => { setOpen(false); setCommunityName(""); setError('') }}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"
@@ -105,7 +106,7 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({ }) => {
                             <Dialog.Panel className="w-full max-w-[32rem] transform overflow-hidden rounded-md bg-white text-left align-middle shadow-xl transition-all">
                                 <div className='h-10 flex items-center justify-between py-6 px-4 border-b border-gray-200'>
                                     <h2 className='font-semibold'>Create a community</h2>
-                                    <AiOutlineClose className='text-xl cursor-pointer' onClick={() => {toggleMenuOpen(); setCommunityName(""); setError('') }} />
+                                    <AiOutlineClose className='text-xl cursor-pointer' onClick={() => {setOpen(false); setCommunityName(""); setError('') }} />
                                 </div>
                                 <div className='flex flex-col gap-7 py-4 px-4'>
                                     <div>
@@ -150,7 +151,7 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({ }) => {
 
                                 <div className='w-full flex gap-6 py-4 mt-3 items-center justify-end bg-gray-200'>
                                     <div className="w-[60%] flex gap-3 items-center justify-center">
-                                        <button className="text-sm font-semibold py-1 px-4 border border-blue-500 text-blue-500 rounded-full">
+                                        <button onClick={()=>setOpen(false)} className="text-sm font-semibold py-1 px-4 border border-blue-500 text-blue-500 rounded-full">
                                             Cancel
                                         </button>
                                         <button onClick={handleCreateCommunity} className="w-44 text-sm font-semibold py-1.5 px-4 bg-blue-500 text-white rounded-full">

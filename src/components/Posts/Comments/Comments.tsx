@@ -158,7 +158,7 @@ const Comments: React.FunctionComponent<ICommentsProps> = ({ user, selectedPost,
             ): (
               <>
            { comments.map(comment => (
-            <CommentItem key={comment.id} comment={comment} onDeleteComment={onDeleteComment} loadingDelete={loadingDeleteId === comment.id} userId={user.uid} />
+            <CommentItem key={comment.id} comment={comment} onDeleteComment={onDeleteComment} loadingDelete={loadingDeleteId === comment.id} userId={user?.uid} />
             ))}
               </>
             )}

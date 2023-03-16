@@ -6,6 +6,8 @@ import RightContent from './RightContent';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase/clientApp';
 import Directory from './Directory/Directory';
+import useDirectory from './Directory/useDirectory';
+import { defaultMenuItem } from '@/atoms/directoryMenuAtom';
 
 type indexProps = {
     
@@ -14,10 +16,11 @@ type indexProps = {
 const index:React.FC<indexProps> = () => {
    
     const [user, loading, error] = useAuthState(auth);
-      
+    const { onSelectMenuItem } = useDirectory()  
+
     return (
     <div className='h-[54px] py-[6px] px-[12px] bg-white shadow-md flex justify-between items-center'>
-        <div className='flex items-center justify-center'>
+        <div onClick={()=>onSelectMenuItem(defaultMenuItem)} className='flex cursor-pointer items-center justify-center'>
                 <Image src="/reddit.png" height={50} width={120} alt=""/> 
         </div>
         {user && <Directory/>}

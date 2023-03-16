@@ -1,14 +1,10 @@
 import React from 'react';
-import { Fragment } from 'react'
 import { FaChevronDown } from 'react-icons/fa'
-import { signOut, User } from 'firebase/auth'
-import { TiHome } from 'react-icons/ti';
-import { BiUserCircle, BiLogOut } from 'react-icons/bi';
-import { useSetRecoilState } from 'recoil';
-import { authModalState } from '@/atoms/authModalAtom';
+import { User } from 'firebase/auth'
 import Communities from './Communities';
-import { Disclosure } from '@headlessui/react'
 import useDirectory from './useDirectory';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 
 
@@ -18,31 +14,34 @@ type DirectoryProps = {
 
 const Directory: React.FC<DirectoryProps> = ({ user }) => {
 
-  const setAuthModalState = useSetRecoilState(authModalState)
-  const { toggleMenuOpen } = useDirectory()
+  const { toggleMenuOpen , directoryState} = useDirectory()
+  
+   const {pathname} = useRouter()
 
   return (
     <div className='relative z-50'>
       <div className="mx-auto rounded-2xl bg-white ">
-        <Disclosure>
-          {({ open }) => (
+
             <>
-              <Disclosure.Button className="flex w-full justify-between">
+              <button className="flex w-full justify-between">
               <div className='flex items-center justify-center'>
             <div onClick={toggleMenuOpen} className='flex items-center justify-between gap-1 text-gray-800'>
-                <TiHome fontSize={24} className="mr-1"/>
+                {directoryState.selectedMenuItem.imageURL ? (
+                  <Image src={directoryState.selectedMenuItem.imageURL} fill alt='' className='!relative mr-2 !w-[24px] 1h-[24px] aspect-square' />
+                ) : (
+                  <directoryState.selectedMenuItem.icon fontSize={24} className={`"mr-1 ${pathname === '/' ? 'text-gray-400' : 'text-blue-500'}`}/>
+                )}
                 <span className='text-[16px] mt-0.5 hidden lg:flex'>Home</span>
                 <FaChevronDown className='text-[12px] mt-1' />
             </div>
             </div>
                
-              </Disclosure.Button>
-              <Disclosure.Panel className="absolute top-11 bg-white py-4 w-60 rouned-md shadow-lg border border-gray-200 rounded-md">
+              </button>
+             {directoryState.isOpen && <div className="absolute top-11 bg-white py-4 w-60 rouned-md shadow-lg border border-gray-200 rounded-md">
                 <Communities/>
-              </Disclosure.Panel>
+              </div>}
             </>
-          )}
-        </Disclosure>
+       
       
       </div>
     </div>
@@ -52,12 +51,3 @@ const Directory: React.FC<DirectoryProps> = ({ user }) => {
 export default Directory
 
 
-
-
-// <div className='flex items-center justify-center'>
-// <div className='flex items-center justify-between gap-1 text-gray-800 hover:border hover:border-gray-200'>
-//     <TiHome fontSize={24} className="mr-1"/>
-//     <span className='text-[16px] mt-0.5 hidden lg:flex'>Home</span>
-//     <FaChevronDown className='text-[12px] mt-1' />
-// </div>
-// </div>
