@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Post, postState } from '@/atoms/postsAtom';
-import { BsArrowUpCircle, BsArrowDownCircle, BsFillArrowDownCircleFill, BsFillArrowUpCircleFill, BsChat, BsBookmark } from 'react-icons/bs'
+import { BsArrowUpCircle, BsArrowDownCircle, BsFillArrowDownCircleFill, BsFillArrowUpCircleFill, BsChat, BsBookmark, BsDot } from 'react-icons/bs'
 import { IoArrowRedoOutline } from 'react-icons/io5'
 import moment from 'moment';
 import Image from 'next/image';
@@ -8,6 +8,8 @@ import { AiOutlineDelete } from 'react-icons/ai';
 import ImageLoader from './ImageLoader';
 import { MdOutlineError } from 'react-icons/md';
 import { Router, useRouter } from 'next/router';
+import { FaReddit } from 'react-icons/fa';
+import Link from 'next/link';
 
 type PostItemProps = {
     post: Post;
@@ -16,6 +18,7 @@ type PostItemProps = {
     onVote: ( event:React.MouseEvent<SVGElement, MouseEvent>, post: Post, vote: number, communityId: string) => void;
     onDeletePost: (post: Post) => Promise<boolean>;
     onSelectPost?: (post:Post) => void;
+    homePage?:boolean
 };
 
 const PostItem: React.FC<PostItemProps> = ({
@@ -24,7 +27,8 @@ const PostItem: React.FC<PostItemProps> = ({
     userVoteValue,
     onVote,
     onDeletePost,
-    onSelectPost
+    onSelectPost,
+    homePage
 }) => {
 
     const [imageLoader, setImageLoader] = useState(true)
@@ -68,7 +72,20 @@ const PostItem: React.FC<PostItemProps> = ({
           </div>
         )}
                 <div className='p-[10px] flex flex-col gap-2'>
-                    <div className='flex gap-0.5 text-xs'>
+                    <div className='flex text-xs items-center'>
+                        {homePage && (
+                            <>
+                            {post.communityImageUrl ? (
+                                <Image src={post.communityImageUrl} alt='' fill className='!relative rounded-full !w-6 !h-6 mr-1 aspect-square'/>
+                            ) : (
+                                <FaReddit className='text-xl mr-1 text-blue-500'/>
+                            )}
+                            <Link href={`r/${post.communityId}`}>
+                                <span onClick={e => e.stopPropagation()} className='font-bold underline'>{`r/${post.communityId}`}</span>
+                            </Link>
+                            <BsDot className='text-sm text-gray-500 mt-0.5'/>
+                            </>
+                        )}
                         <span className='text-gray-400'>
                             Posted by u/{post.creatorDisplayName}{" "}{moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
                         </span>

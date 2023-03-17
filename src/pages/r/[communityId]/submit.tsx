@@ -18,14 +18,13 @@ const SubmitPostPage:React.FC<SubmitPostPageProps> = () => {
     const [user] = useAuthState(auth)
     const { communityStateValue } = useCommunityData()
 
-    console.log('COMMUNITY' , communityStateValue)
-    
+     
     return <PageContent>
         <>
         <div className='py-[14px] border-b border-white'>
             <span>Create a post</span>
         </div>
-       {user && <NewPostForm user={user}/>}
+       {user && <NewPostForm user={user} communityImageUrl={communityStateValue.currentCommunity?.imageURL}/>}
         </>
         <>
         {communityStateValue.currentCommunity && <About communityData={communityStateValue.currentCommunity}/>}

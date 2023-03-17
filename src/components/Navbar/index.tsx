@@ -23,7 +23,9 @@ const index:React.FC<indexProps> = () => {
         <div onClick={()=>onSelectMenuItem(defaultMenuItem)} className='flex cursor-pointer items-center justify-center'>
                 <Image src="/reddit.png" height={50} width={120} alt=""/> 
         </div>
+        <div className='px-4'>
         {user && <Directory/>}
+        </div>
         <SearchInput user={user}/>
         <Auth/>
         <RightContent user={user}/>
