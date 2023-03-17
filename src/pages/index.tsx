@@ -114,7 +114,7 @@ const Home:NextPage = () => {
       {loading ? (
         <PostLoader/>
       ) : (
-        <div>
+        <div className='flex flex-col gap-3'>
           {postsStateValue.posts.map(post=>(
             <PostItem 
               key={post.id}
