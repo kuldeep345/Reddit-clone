@@ -4,6 +4,8 @@ import { useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '@/firebase/clientApp';
 import { doc, setDoc } from 'firebase/firestore';
 import { User } from 'firebase/auth';
+import { useSetRecoilState } from 'recoil';
+import { authModalState } from '@/atoms/authModalAtom';
 
 type OAuthButtonProps = {
     
@@ -12,6 +14,7 @@ type OAuthButtonProps = {
 const OAuthButton:React.FC<OAuthButtonProps> = () => {
 
     const [signInWithGoogle , userCred , loading , error] = useSignInWithGoogle(auth)
+    const setAuthModaState = useSetRecoilState(authModalState)
 
     const createUserDocument = async (user:User) => {
        const userDocRef = doc(firestore , "users" , user.uid);
@@ -24,7 +27,13 @@ const OAuthButton:React.FC<OAuthButtonProps> = () => {
         }, [userCred])
     
     return <div className='flex flex-col w-full'>
-        <button className="googlebtn" onClick={()=>signInWithGoogle()}>
+        <button className="googlebtn" onClick={async()=>{
+            await signInWithGoogle()
+            setAuthModaState(prev =>({
+                ...prev,
+                open:false
+               }))
+            }}>
              {loading ? <div
                 className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] text-secondary motion-reduce:animate-[spin_1.5s_linear_infinite]"
                 role="status">

@@ -15,8 +15,14 @@ const useDirectory = () => {
             ...prev,
             selectedMenuItem:menuItem
         }))
+
+        if(menuItem.link === '/'){
+            router.push('/')
+        }   
+        else{
             const link = menuItem.link.split('/')
             router.push(`/r/${link[link.length - 1]}`)
+        }
      
         if(directoryState.isOpen){
             toggleMenuOpen()
